@@ -1,0 +1,41 @@
+<% if flash[:alert].present? %>
+<div class="alert alert-danger alert-dismissible fade show" role="alert" id="alert">
+  <%= flash[:alert] %>
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+<% end %>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const alert = document.querySelector("#alert");
+  const closeButton = alert.querySelector(".btn-close");
+
+  closeButton.addEventListener("click", function() {
+    alert.classList.add("fade");
+    setTimeout(function() {
+      alert.remove();
+    }, 000); 
+  });
+});
+</script>
+
+<div class="container">
+ 
+
+  <div class="card mt-4">
+    <div class="card-body">
+      <h1 class="card-title">Create Ground</h1>
+
+      <%= form_with(model: [@organization, @ground], url: organization_grounds_path(@organization), method: :post, class: "mt-4") do |f| %>
+        <div class="form-group">
+          <%= f.label :name %>
+          <%= f.text_field :name, class: "form-control" %>
+        </div>
+      
+        <div class="text-center">
+          <%= f.submit "Create Ground", class: "btn btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

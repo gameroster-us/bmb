@@ -1,0 +1,104 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS (and SCSS, if configured) file within this directory, lib/assets/stylesheets, or any plugin's
+ * vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ *
+ *= require_tree .
+ *= require_self
+ */
+ @import "bootstrap";
+
+
+ .scrollable-navbar {
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  
+  .scrollable-nav-content {
+    display: inline-flex;
+  }
+  
+  .btn-info{
+    margin: 10px;
+  }
+
+  .time-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+  
+  .time-buttons .btn {
+    margin-right: 10px;
+    margin-bottom: 10px;
+  }
+
+  .tab-content>.tab-pane {
+    display: block;
+}
+
+
+.fade:not(.show) {
+    opacity: 1;
+}
+  
+.highlight {
+  background-color: yellow;
+  border-width: 3px;
+  box-shadow: 8px 8px 20px 0px;
+}
+
+/* @keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.fadeIn {
+  animation-name: fadeIn;
+  animation-duration: 2s;
+} */
+
+h3{
+  background-color: #73f2ff45;
+border-radius: 8px;
+}
+
+h1{
+  background-color: #00000026;
+border-radius: 8px;
+}
+.selected{
+  border-width: 2px;
+  border-color: #bfbfbf;
+}
+.slot:checked{
+  background-color: #05701c;
+  border-color: #05701c;
+}
+
+.slot {
+ height: 1.5em;
+ width  : 1.5em;
+}
+
+.container , r{
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+.border{
+  box-shadow: 0px 0px 10px 0px;
+  border-radius: 10px;
+}
+

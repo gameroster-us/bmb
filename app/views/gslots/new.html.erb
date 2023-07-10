@@ -1,0 +1,132 @@
+<% if flash[:alert].present? %>
+<div class="alert alert-danger alert-dismissible fade show" role="alert" id="alert">
+  <%= flash[:alert] %>
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+<% end %>
+
+<div class="container fadeIn">
+  <div class="card mt-4">
+    <div class="card-body">
+      <h1 class="card-title">Add Slots</h1>
+
+      <%= form_with(model: [@ground, @gslot], url: ground_gslots_path(@ground), method: :post, html: { class: 'needs-validation', novalidate: true }) do |f| %>
+        <div class="mb-3">
+          <%= f.label :date, class: "form-label" %>
+          <%= f.date_field :date, class: "form-control", id: "slots_date" %>
+        </div>
+        <div class="tab-content">
+          <div class="tab-pane fade" id="time-buttons" role="tabpanel">
+            <h3 class="card-title">Slot Name: <%= @ground.name %></h3>
+            <div class="form-check">
+              <%= check_box_tag 'select_all', '', false, { class: 'form-check-input', id: 'select-all-checkbox', onchange: "selectAllCheckboxes(this)" } %>
+              <label class="form-check-label" for="select-all-checkbox">Select All</label>
+            </div>
+            <div class="time-buttons">
+              <% (0..23).each do |hour| %>
+                <% start_time = hour.to_s.rjust(2, '0') + ':00' %>
+                <% end_time = (hour + 1).to_s.rjust(2, '0') + ':00' %>
+                <div class="btn btn-info" id="slot_id_<%= hour %>_container">
+                  <div class="form-check">
+                    <%= check_box_tag 'slot_times[]', start_time, false, { multiple: true, class: 'form-check-input', id: "slot_id_#{hour}", onchange: "selectBothCheckboxes(#{hour}); highlightDiv('slot_id_#{hour}_container')" } %>
+                    <%= check_box_tag 'end_times[]', end_time, false, { multiple: true, class: 'form-check-input', id: "slot_id_#{hour}_end", style: 'visibility: hidden' } %>
+                    <label class="form-check-label" for="slot_id_<%= hour %>">
+                      <%= start_time %> - <%= end_time %>
+                    </label>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+        <div class="mb-3">
+          <%= f.label :charge, class: "form-label" %>
+          <%= f.number_field :charge, class: "form-control" %>
+        </div>
+        <div>
+          <%= f.submit "Create Slot", class: "btn btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+$(document).ready(function() {
+$("#slots_date").change(function(e){
+  var selectedDate = $(this).val();
+  $.ajax({
+    url: '/get_date',
+    method: 'get',
+    data: { id: selectedDate , ground_id: "<%=@ground.id %>"},
+    dataType: 'json',
+    success: function(response) {
+      var existingStartTimes = [];
+
+      response.forEach(function(slot) {
+        var start_time = new Date(slot.start_time).toISOString().substr(11, 5);
+        existingStartTimes.push(start_time);
+      });
+
+    $("input[name='slot_times[]']").each(function() {
+        var startTimeValue = $(this).val();
+        if (existingStartTimes.includes(startTimeValue)) {
+          $(this).prop("disabled", true);
+        } else {
+          $(this).prop("disabled", false);
+        }
+      });
+    },
+    error: function(xhr, status, error) {
+    }
+  });
+  }).trigger('change')
+  });
+
+  $(document).ready(function() {
+  $('#select-all-checkbox').change(function() {
+    var isChecked = $(this).is(':checked');
+    $('input[name="slot_times[]"]').not(':disabled').prop('checked', isChecked);
+  });
+  
+  $('input[name="slot_times[]"]').change(function() {
+    var allChecked = $('input[name="slot_times[]"]:not(:disabled)').length === $('input[name="slot_times[]"]:not(:disabled):checked').length;
+    $('#select-all-checkbox').prop('checked', allChecked);
+  });
+});
+
+function selectBothCheckboxes(hour) {
+    var slotCheckbox = document.getElementById("slot_id_" + hour);
+    var endCheckbox = document.getElementById("slot_id_" + hour + "_end");
+
+    endCheckbox.checked = slotCheckbox.checked;
+  }
+
+  function highlightDiv(containerId) {
+    var container = document.getElementById(containerId);
+    container.classList.toggle("highlight");
+  }
+
+  function selectAllCheckboxes(checkbox) {
+    var checkboxes = document.querySelectorAll('input[name="slot_times[]"]:not(:disabled)');
+    checkboxes.forEach(function (checkbox) {
+      checkbox.checked = !checkbox.disabled && checkbox.checked !== checkbox.checked;
+      highlightDiv(checkbox.parentElement.parentElement.id);
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", function() {
+      const alert = document.querySelector("#alert");
+      const closeButton = alert.querySelector(".btn-close");
+
+      closeButton.addEventListener("click", function() {
+        alert.classList.add("fade");
+        setTimeout(function() {
+          alert.remove();
+        }, 000); 
+      });
+    });
+
+</script>

@@ -1,0 +1,42 @@
+<% if flash[:alert].present? %>
+<div class="alert alert-danger alert-dismissible fade show" role="alert" id="alert">
+  <%= flash[:alert] %>
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+<% end %>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const alert = document.querySelector("#alert");
+  const closeButton = alert.querySelector(".btn-close");
+
+  closeButton.addEventListener("click", function() {
+    alert.classList.add("fade");
+    setTimeout(function() {
+      alert.remove();
+    }, 000); 
+  });
+});
+</script>
+<div class="container">
+  <div class="card mt-5">
+    <div class="card-header">
+      <h3 class="card-title">Create Organization</h3>
+    </div>
+    <div class="card-body">
+      <%= form_with(model: @organization, url: organizations_path, method: :post, class: "form") do |f| %>
+        <div class="mb-3">
+          <%= f.label :name, class: "form-label" %>
+          <%= f.text_field :name, class: "form-control form-control-sm" %>
+        </div>
+        <div class="mb-3">
+          <%= f.label :address, class: "form-label" %>
+          <%= f.text_field :address, class: "form-control form-control-sm" %>
+        </div>
+        <div class="text-center">
+          <%= f.submit "Create Organization", class: "btn btn-primary btn-sm" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,71 @@
+<% if flash[:alert].present? %>
+<div class="alert alert-danger alert-dismissible fade show" role="alert" id="alert">
+  <%= flash[:alert] %>
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+<% end %>
+
+<div class="container">
+
+<div class="card mt-4">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<h1 class="card-title ">Organization</h1>
+  <br>
+  <div class="collapse navbar-collapse" id="navbarNav">
+  <% if @user %>
+  <ul class="navbar-nav ml-auto">
+      <li class="nav-item ml-25px">
+        <%= link_to "Create Organization", new_organization_path, class: "btn btn-primary" %>
+      </li>
+    </ul>
+  <%else%>
+  <%end%>
+  </div>
+</nav>
+    <div class="card-body">
+
+      <% if @organization.any? %>
+        <div class="row">
+          <% @organization.each do |organization| %>
+            <div class="col-md-4 mb-3">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title"><%= organization.name %></h5>
+                  <p class="card-text"><%= organization.address %></p>
+                  <div class="text-end">
+                  <%= link_to "Go to Grounds", organization_path(organization), class: "btn btn-primary me-2" %>
+                  <% if @user %>
+                  <%= link_to "Create Ground", new_organization_ground_path(organization_id: organization.id), class: "btn btn-success" %>
+                  <%else%>
+                  <%end%>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p>No organization found.</p>
+      <% end %>
+    </div>
+  </div>
+
+  <%= form_tag(send_sms_path, method: :post) do %>
+    <%= submit_tag 'Send SMS' %>
+  <% end %>
+  
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const alert = document.querySelector("#alert");
+  const closeButton = alert.querySelector(".btn-close");
+
+  closeButton.addEventListener("click", function() {
+    alert.classList.add("fade");
+    setTimeout(function() {
+      alert.remove();
+    }, 000); 
+  });
+});
+</script>

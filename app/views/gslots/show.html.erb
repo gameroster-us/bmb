@@ -1,0 +1,28 @@
+<% if flash[:alert].present? %>
+<div class="alert alert-danger alert-dismissible fade show" role="alert" id="alert">
+  <%= flash[:alert] %>
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+<% end %>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const alert = document.querySelector("#alert");
+  const closeButton = alert.querySelector(".btn-close");
+
+  closeButton.addEventListener("click", function() {
+    alert.classList.add("fade");
+    setTimeout(function() {
+      alert.remove();
+    }, 000); 
+  });
+});
+</script>
+<div class="container">
+  <h1>Slot Details</h1>
+  <p>Date: <%= @gslot.date %></p>
+  <p>Time: <%= @gslot.start_time.strftime('%H:%M') %> - <%= @gslot.end_time.strftime('%H:%M') %></p>
+  <p>Charge: <%= @gslot.charge %></p>
+
+  <%= link_to "Confirm", book_slot_organization_ground_gslot_path(@organization, @ground, @gslot), method: :post, class: "btn btn-success" %>
+</div>

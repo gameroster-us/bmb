@@ -1,0 +1,108 @@
+<% if flash[:alert].present? %>
+<div class="alert alert-danger alert-dismissible fade show" role="alert" id="alert">
+  <%= flash[:alert] %>
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+<% end %>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const alert = document.querySelector("#alert");
+  const closeButton = alert.querySelector(".btn-close");
+
+  closeButton.addEventListener("click", function() {
+    alert.classList.add("fade");
+    setTimeout(function() {
+      alert.remove();
+    }, 000); 
+  });
+});
+</script>
+    
+ 
+<div class="container">
+  <div class="border border-gray-300 p-4" style="border-radius: 10px;">
+    <h1>Confirm Booking</h1>
+<form id="paymentForm" action="/payments" method="post">
+  <input type="hidden" name="payment[order_id]" value="<%= @order_id %>">
+  <input type="hidden" name="payment[gslot_id]" value="<%= @selected_slots %>">
+  <input type="hidden" name="payment[user_id]" value="<%= current_user.id%>">
+  <!-- Include any other payment form fields here -->
+   
+  <table class="table table-striped mt-4">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Time</th>
+      <th>Charge</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @charge =  0 %>
+    <% @gslot.each do |gslot| %>
+      <tr>
+        <td><%= gslot.date %></td>
+        <td><%= "#{gslot.start_time.strftime('%H:%M')} - #{gslot.end_time.strftime('%H:%M')}" %></td>
+        <td><%= gslot.charge %></td>
+      </tr>
+      <% a = gslot.charge
+      @charge = @charge + a %>
+    <% end %>
+  </tbody>
+</table>
+
+<h3>Total Payment: <%= @charge %></h3>
+
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <button id="doPaymentButton" class="btn btn-success">Do Payment</button>
+</form>
+</div>
+</div>
+<script>
+  document.getElementById('paymentForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    initializePayment();
+  });
+
+  function initializePayment() {
+    var data1 = new Razorpay({
+      key: '<%= Rails.application.credentials.dig(:razorpay, :key) %>',
+      amount: <%= @charge * 100 %>, // Multiply by 100 to convert to paise (Razorpay expects amount in smallest currency unit)
+      currency: 'INR',
+      name: 'Logical Street',
+      description: 'Test Transaction',
+      image: './assets/images/1.png',
+      order_id: '<%= @order_id %>',
+      handler: function(response) {
+        var paymentForm = document.getElementById('paymentForm');
+        var paymentAmountInput = document.createElement('input');
+        paymentAmountInput.type = 'hidden';
+        paymentAmountInput.name = 'payment[amount]';
+        paymentAmountInput.value = <%= @charge %>;
+        paymentForm.appendChild(paymentAmountInput);
+  
+        var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+  
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/payments');
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.setRequestHeader('X-CSRF-Token', csrfToken);
+        xhr.send(JSON.stringify({ payment: { amount: <%= @charge.to_i * 100 %>, user_id: <%= current_user.id %> } }));
+        paymentForm.submit();
+      },
+      prefill: {
+        name: 'Maulik Prajapati',
+        email: 'maulik@gmail.com',
+        contact: '9000090000'
+      },
+      notes: {
+        address: 'Razorpay Corporate Office'
+      },
+      theme: {
+        color: '#3399cc'
+      }
+    });
+  
+    data1.open();
+  }
+</script>

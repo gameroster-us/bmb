@@ -1,0 +1,50 @@
+<% if flash[:alert].present? %>
+<div class="alert alert-danger alert-dismissible fade show" role="alert" id="alert">
+  <%= flash[:alert] %>
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+<% end %>
+</script>
+<div class="container">
+<div class="card mt-4">
+<div class="card-body">
+<h1 class="card-title">Ground Details</h1>
+
+<% if @organization.present? && @organization.grounds.present? %>
+<% @organization.grounds.each do |ground| %>
+  <div class="card mt-3">
+  <div class="card-body">
+              <h5 class="card-title"><%= ground.name %></h5>
+              <div class="d-grid gap-2 d-md-block">
+              <% if current_user.admin? %>
+              <%= link_to "Create Slots", new_ground_gslot_path(ground), class: "btn btn-primary mt-3" %>
+              <% else %>
+              <% end %>
+              <% if current_user.admin? %>
+              <%= link_to "View Slots", ground_gslots_path(ground), class: "btn btn-success mt-3" %>
+              <% else %>
+              <%= link_to "Book Slots", ground_gslots_path(ground), class: "btn btn-success mt-3" %>
+              <% end %>
+              </div>
+              </div>
+          </div>
+          <% end %>
+          <% else %>
+          <p class="text-muted">No grounds found for this organization.</p>
+      <% end %>
+    </div>
+    </div>
+    </div>
+    
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const alert = document.querySelector("#alert");
+      const closeButton = alert.querySelector(".btn-close");
+    
+      closeButton.addEventListener("click", function() {
+        alert.classList.add("fade");
+        setTimeout(function() {
+          alert.remove();
+        }, 000); 
+      });
+    });

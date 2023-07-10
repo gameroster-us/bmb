@@ -1,0 +1,101 @@
+<% if flash[:alert].present? %>
+<div class="alert alert-danger alert-dismissible fade show" role="alert" id="alert">
+  <%= flash[:alert] %>
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+<% end %>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const alert = document.querySelector("#alert");
+  const closeButton = alert.querySelector(".btn-close");
+
+  closeButton.addEventListener("click", function() {
+    alert.classList.add("fade");
+    setTimeout(function() {
+      alert.remove();
+    }, 000); 
+  });
+});
+</script>
+
+<div class="container">
+  <div class="border border-gray-300 p-4">
+    <h1>Slots</h1>
+
+    <%= search_form_for [@ground, @q], method: :get, id: "search-form" do |f| %>
+      <div class="form-group">
+        <%= f.label :date_cont, "Search by Date:" %>
+        <%= f.date_field :date_cont, id: "search-date", onchange: "$(this).closest('form').submit();", class: "form-control" %>
+      </div>
+    <% end %>
+
+    <% if @gslots.any? %>
+    <%= form_tag payment_data_path, method: :post, id: "payment-form" do %>
+
+        <table class="table mt-4">
+          <thead> 
+            <tr>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Charge</th>
+              <th>Status</th>
+              <%if current_user.user?%>
+              <th>Select</th>
+              <%else%>
+              <%end%>
+            </tr>
+          </thead>
+          <tbody>
+            <% @gslots.each_with_index do |gslot, index| %>
+              <tr class="<%= index.even? ? 'table-light' : 'table-secondary' %>" onclick="highlightRow(this)">
+                <td><%= gslot.date %></td>
+                <td><%= "#{gslot.start_time.strftime('%H:%M')} - #{gslot.end_time.strftime('%H:%M')}" %></td>
+                <td id="charge_<%= gslot.id %>"><%= gslot.charge %></td>
+                <td>
+                  <% if Booking.exists?(gslot_id: gslot.id) %>
+                    <button class="btn btn-secondary" disabled>Booked</button>
+                  <% else %>
+                  <button class="btn btn-success" >Available</button>
+                  <% end %>
+                </td>
+                <%if current_user.user?%>
+                <td>
+                <% if Booking.exists?(gslot_id: gslot.id) %>
+                  <input class="form-check-input slot" type="checkbox" name="selected_slots[]" value="<%= gslot.id %>" disabled />
+                <% else %>
+                <input class="form-check-input slot" type="checkbox" name="selected_slots[]" value="<%= gslot.id %>" />
+                 
+                <% end %>
+                  </td>
+                <%else%>
+              <%end%>
+              </tr> 
+            <% end %>
+          </tbody>
+        </table>
+        <%if current_user.user?%>
+        <div class="mt-4">
+          <%= submit_tag "Proceed to Payment", class: "btn btn-primary" %>
+        </div>
+        <%else%>
+        <%end%>
+      <% end %>
+
+    <% else %>  
+      <p>No slots found.</p>
+    <% end %>
+    <%if current_user.admin?%>
+    <div class="mt-4">
+      <%= link_to "Create New Slot", new_ground_gslot_path(@ground), class: "btn btn-primary" %>
+    </div>
+    <%else%>
+    <%end%>
+  </div>
+</div>
+
+<script>
+  function highlightRow(row) {
+    row.classList.toggle('selected');
+  }
+</script>
