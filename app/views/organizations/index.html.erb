@@ -9,6 +9,7 @@
 
 <div class="card mt-4">
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
+<div class="navdiv">
 <h1 class="card-title ">Organization</h1>
   <br>
   <div class="collapse navbar-collapse" id="navbarNav">
@@ -17,10 +18,16 @@
       <li class="nav-item ml-25px">
         <%= link_to "Create Organization", new_organization_path, class: "btn btn-primary" %>
       </li>
+      <%else%>
+      <%end%>
+      <li class="nav-item ml-25px">
+        <%= link_to "Show Bookings", bookings_path, class: "btn btn-success " %>
+      </li> <li class="nav-item ml-25px">
+      <%= link_to "Your Orders", bookings_path, class: "btn btn-success " %>
+    </li>
     </ul>
-  <%else%>
-  <%end%>
   </div>
+</div>
 </nav>
     <div class="card-body">
 
@@ -34,7 +41,7 @@
                   <p class="card-text"><%= organization.address %></p>
                   <div class="text-end">
                   <%= link_to "Go to Grounds", organization_path(organization), class: "btn btn-primary me-2" %>
-                  <% if @user %>
+                  <% if current_user.admin? %>
                   <%= link_to "Create Ground", new_organization_ground_path(organization_id: organization.id), class: "btn btn-success" %>
                   <%else%>
                   <%end%>
@@ -50,10 +57,6 @@
     </div>
   </div>
 
-  <%= form_tag(send_sms_path, method: :post) do %>
-    <%= submit_tag 'Send SMS' %>
-  <% end %>
-  
 </div>
 
 <script>

@@ -29,14 +29,20 @@ Rails.application.routes.draw do
   authenticate :user do
     resources :payments 
   end
-  
+   
   authenticate :user do
     resources :gslots, only: [:payment]
   end
 
-  get "/verify_otp", to: "users/registrations#verify_otp", as: :verify_otp
-
+  resources :bookings
  
+  devise_scope :user do
+    get "/verify_otp", to: "users/registrations#verify_otp", as: :verify_otp
+    post "/verify_otp", to: "users/registrations#verify_otp"
+  end
+  
+  post '/manual_bookings/create', to: 'manual_bookings#create', as: 'create_manual_booking'
+  get '/booking_success', to: 'bookings#success', as: 'booking_success'
   get '/ground_gslots/check_slots', to: 'gslots#check_slots'
   get '/get_date', to: 'gslots#get_date'
-end
+  end

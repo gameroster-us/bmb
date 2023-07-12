@@ -18,11 +18,61 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 });
 </script>
-    
- 
+<%if current_user.admin?%>
 <div class="container">
   <div class="border border-gray-300 p-4" style="border-radius: 10px;">
-    <h1>Confirm Booking</h1>
+    <h1>Manual Booking</h1>
+    <form action="<%= create_manual_booking_path %>" method="post">
+      <%= csrf_meta_tags %>
+      <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+      <input type="hidden" name="payment[gslot_id]" value="<%= @selected_slots %>">
+      <input type="hidden" name="payment[total_payment]" value="<%= @charge / 100 %>">
+      <div class="form-group">
+        <label for="phone_number">Phone Number:</label>
+        <input type="text" name="payment[phone_number]" id="phone_number" class="form-control">
+      </div>
+      
+      <div class="form-group">
+        <label for="user_information">User Information:</label>
+        <textarea name="payment[user_information]" id="user_information" class="form-control"></textarea>
+      </div>
+
+      <table class="table table-striped mt-4">
+        <thead>
+          <tr>
+            <th>Date</th> 
+            <th>Time</th>
+            <th>Charge</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @charge =  0 %>
+          <% @gslot.each do |gslot| %>
+            <tr>
+              <td><%= gslot.date %></td>
+              <td><%= "#{gslot.start_time.strftime('%H:%M')} - #{gslot.end_time.strftime('%H:%M')}" %></td>
+              <td><%= gslot.charge %></td>
+            </tr>
+            <% a = gslot.charge
+            @charge = @charge + a %>
+          <% end %>
+        </tbody>
+      </table>
+      
+      <h3>Total Payment: <%= @charge %></h3>
+      
+      <button class="btn btn-success" type="submit">Confirm Booking</button>
+    </form>
+  </div>
+</div>
+
+<% else %>
+<% end %>
+
+<%if current_user.user?%>
+<div class="container">
+  <div class="border border-gray-300 p-4" style="border-radius: 10px;">
+  <h1>Confirm Booking</h1>
 <form id="paymentForm" action="/payments" method="post">
   <input type="hidden" name="payment[order_id]" value="<%= @order_id %>">
   <input type="hidden" name="payment[gslot_id]" value="<%= @selected_slots %>">
@@ -32,7 +82,7 @@ document.addEventListener("DOMContentLoaded", function() {
   <table class="table table-striped mt-4">
   <thead>
     <tr>
-      <th>Date</th>
+      <th>Date</th> 
       <th>Time</th>
       <th>Charge</th>
     </tr>
@@ -58,6 +108,7 @@ document.addEventListener("DOMContentLoaded", function() {
 </form>
 </div>
 </div>
+
 <script>
   document.getElementById('paymentForm').addEventListener('submit', function(event) {
     event.preventDefault();
@@ -106,3 +157,5 @@ document.addEventListener("DOMContentLoaded", function() {
     data1.open();
   }
 </script>
+<% else %>
+<% end %>

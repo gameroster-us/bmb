@@ -13,7 +13,7 @@
       <%= form_with(model: [@ground, @gslot], url: ground_gslots_path(@ground), method: :post, html: { class: 'needs-validation', novalidate: true }) do |f| %>
         <div class="mb-3">
           <%= f.label :date, class: "form-label" %>
-          <%= f.date_field :date, class: "form-control", id: "slots_date" %>
+          <%= f.date_field :date, class: "form-control", id: "slots_date" , value: Date.current %>
         </div>
         <div class="tab-content">
           <div class="tab-pane fade" id="time-buttons" role="tabpanel">
@@ -89,6 +89,8 @@ $("#slots_date").change(function(e){
   $('#select-all-checkbox').change(function() {
     var isChecked = $(this).is(':checked');
     $('input[name="slot_times[]"]').not(':disabled').prop('checked', isChecked);
+    $('input[name="end_times[]"]').not(':disabled').prop('checked', isChecked);
+    
   });
   
   $('input[name="slot_times[]"]').change(function() {

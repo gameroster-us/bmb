@@ -4,9 +4,6 @@ class User < ApplicationRecord
     devise :database_authenticatable, :registerable,
           :recoverable, :rememberable, :validatable
 
-def self.devise_parameter_sanitizer
-  super + [:phone_number]
-end
           
 enum role: { user: nil, admin: "1" }
 

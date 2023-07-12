@@ -1,7 +1,32 @@
-<h2>Verify OTP</h2>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="text-center">Verify OTP</h2>
+        </div>
+        <div class="card-body">
+          <%= form_with(url: verify_otp_path, method: :post, html: { class: "new_user", id: "verify-otp-form" }) do |f| %>
+            <%= f.hidden_field :user_id, value: params[:user_id] %>
+            <% p params[:user_id] %>
 
-<%= form_with(url: verify_otp_path, method: :post) do |f| %>
-  <%= f.label :otp %>
-  <%= f.text_field :otp %>
-  <%= f.submit "Verify" %>
-<% end %>
+            <div class="form-group">
+              
+              <%= f.text_field :checkotp, class: "form-control" , placeholder: "Enter OTP" %>
+            </div>
+            <br>
+            <div class="form-group text-center">
+              <%= f.submit "Verify", class: "btn btn-success" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <% flash.each do |key, value| %>
+    <div class="alert alert-<%= key == "notice" ? "success" : "danger" %>">
+      <%= value %>
+    </div>
+  <% end %>
+</div>

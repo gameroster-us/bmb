@@ -2,16 +2,14 @@ class OrganizationsController < ApplicationController
     
     def index
         if current_user.admin?
-          @user = true 
+         p true
+         p true
         else
-          @user = false
+          p false
+          p false
         end
         
-        if current_user.user? 
-           p true 
-        else 
-           p false 
-        end 
+       
         
         authorize Organization 
         @organization = policy_scope(Organization).all

@@ -26,13 +26,6 @@ class GslotPolicy < ApplicationPolicy
   
     class Scope < Scope
       def resolve
-        p "8888888888888888"
-        p "8888888888888888"
-        p "8888888888888888"
-        p "8888888888888888"
-        p "8888888888888888"
-        p "8888888888888888"
-
         scope.all
       end
     end

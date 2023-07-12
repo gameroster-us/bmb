@@ -102,3 +102,7 @@ border-radius: 8px;
   border-radius: 10px;
 }
 
+.navdiv{
+  display: flex;
+  margin-left: 20px;
+}

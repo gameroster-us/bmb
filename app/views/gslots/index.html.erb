@@ -40,10 +40,7 @@ document.addEventListener("DOMContentLoaded", function() {
               <th>Time</th>
               <th>Charge</th>
               <th>Status</th>
-              <%if current_user.user?%>
               <th>Select</th>
-              <%else%>
-              <%end%>
             </tr>
           </thead>
           <tbody>
@@ -59,27 +56,21 @@ document.addEventListener("DOMContentLoaded", function() {
                   <button class="btn btn-success" >Available</button>
                   <% end %>
                 </td>
-                <%if current_user.user?%>
+              
                 <td>
                 <% if Booking.exists?(gslot_id: gslot.id) %>
-                  <input class="form-check-input slot" type="checkbox" name="selected_slots[]" value="<%= gslot.id %>" disabled />
-                <% else %>
-                <input class="form-check-input slot" type="checkbox" name="selected_slots[]" value="<%= gslot.id %>" />
-                 
+                  <input class="form-check-input slot" type="checkbox" name="selected_slots[]" value="<%= gslot.id %>" disabled onclick="toggleCheckbox(this)" />
+                  <% else %>
+                  <input class="form-check-input slot" type="checkbox" name="selected_slots[]" value="<%= gslot.id %>" onclick="toggleCheckbox(this)" />
                 <% end %>
                   </td>
-                <%else%>
-              <%end%>
               </tr> 
             <% end %>
           </tbody>
         </table>
-        <%if current_user.user?%>
         <div class="mt-4">
           <%= submit_tag "Proceed to Payment", class: "btn btn-primary" %>
         </div>
-        <%else%>
-        <%end%>
       <% end %>
 
     <% else %>  
@@ -96,6 +87,17 @@ document.addEventListener("DOMContentLoaded", function() {
 
 <script>
   function highlightRow(row) {
-    row.classList.toggle('selected');
+    var checkbox = row.querySelector('.slot');
+    if (!checkbox.disabled) {
+      row.classList.toggle('selected');
+      checkbox.checked = !checkbox.checked;
+    }
+  }
+
+  function toggleCheckbox(checkbox) {
+    var row = checkbox.closest('tr');
+    if (!checkbox.disabled) {
+      row.classList.toggle('selected');
+    }
   }
 </script>

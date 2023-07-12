@@ -10,14 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_10_105918) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_12_110035) do
   create_table "bookings", force: :cascade do |t|
     t.string "order_id"
     t.decimal "total_payment"
-    t.integer "user_id", null: false
+    t.integer "user_id"
     t.integer "gslot_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "phone_number"
+    t.text "user_information"
     t.index ["gslot_id"], name: "index_bookings_on_gslot_id"
     t.index ["user_id"], name: "index_bookings_on_user_id"
   end
@@ -50,18 +52,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_10_105918) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "email", default: "", null: false
-    t.string "encrypted_password", default: "", null: false
-    t.string "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "remember_created_at"
+    t.string "reset_password_sent_at"
+    t.string "reset_password_token"
+    t.string "encrypted_password"
+    t.string "email"
     t.string "role"
     t.string "phone_number"
-    t.string "otp"
-    t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.string "checkotp"
   end
 
   add_foreign_key "bookings", "gslots"
